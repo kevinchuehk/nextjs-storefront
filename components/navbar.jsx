@@ -1,6 +1,14 @@
 import Link from 'next/link'
+import React, { useState, useEffect } from 'react'
 
 export default function Navbar() {
+    const [isLogin, setLogin ] = useState(false)
+
+    useEffect(() => {
+        const isLogin = sessionStorage.getItem("isLogin") ? true : false
+        setLogin(isLogin)
+    })
+
     return (
         <>
             <div className="navbar bg-base-100">
@@ -15,7 +23,7 @@ export default function Navbar() {
                             購物車
                         </a>
                     </Link>
-                    <Link href="/user">
+                    <Link href={isLogin ? "/profile": "/login"}>
                         <a className="btn btn-ghost btn-circle">
                             用戶
                         </a>

@@ -15,11 +15,14 @@
     "@apollo/client": "^3.6.9",
     "autoprefixer": "^10.4.9",
     "daisyui": "^2.27.0",
+    "formik": "^2.2.9",
     "graphql": "^16.6.0",
     "next": "12.3.0",
     "postcss": "^8.4.16",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-use-cart": "^1.13.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "eslint": "8.23.0",
