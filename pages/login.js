@@ -46,23 +46,26 @@ export default function User() {
                 }
             }
         `
+        try {
+            const data = await client.mutate({
+                mutation: SIGNIN_GQL,
+                variables: { email, password }
+            })
 
-        const data = await client.mutate({
-            mutation: SIGNIN_GQL,
-            variables: { email, password }
-        })
+            const { token, errors } = data.tokenCreate
 
-        let { token, errors } = data.tokenCreate
-
-        if (errors && errors.length > 0) {
-            sessionStorage.setItem("token", "")
-            sessionStorage.setItem("isLogin", false)
-            setLoginError(errors)
-        }
-        else {
-            sessionStorage.setItem("token", token)
-            sessionStorage.setItem("isLogin", true)
-            router.push("/profile")
+            if(errors && errors.length > 0) {
+                sessionStorage.setItem("token", "")
+                sessionStorage.setItem("isLogin", false)
+                setLoginError(errors)
+            }
+            else {
+                sessionStorage.setItem("token", token)
+                sessionStorage.setItem("isLogin", true)
+                router.push("/profile")
+            }
+        } catch(err) {
+            alert(err)
         }
     }
 
@@ -84,36 +87,36 @@ export default function User() {
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            <div className="grid place-content-start md:place-content-center">
+            <div className="grid grid-rows-3 place-content-center md:place-content-center">
                 <div className="card w-96 bg-neutral text-neutral-content">
                     <div className="card-body items-center text-center">
                         <h2 className="card-title">Login</h2>
                         <p>{formik.errors.email}</p>
-                        <label className="input-group input-group">
-                            <span className="bg-green-500">Email</span>
+                        <label className="input-group">
+                            <span className="">Email</span>
                             <input
                                 name="email"
                                 type="text"
                                 placeholder="info@site.com"
-                                className="input"
+                                className="input input-bordered"
                                 value={formik.values.email}
                                 onChange={formik.handleChange}
                             />
                         </label>
                         <p>{formik.errors.password}</p>
-                        <label className="input-group input-group">
-                            <span className="bg-green-500">Password</span>
+                        <label className="input-group">
+                            <span className="">Password</span>
                             <input
                                 name="password"
                                 type="password"
-                                className="input"
+                                className="input input-bordered"
                                 value={formik.values.password}
                                 onChange={formik.handleChange}
                             />
                         </label>
 
                         <div className="card-actions justify-end">
-                            <button className="btn btn-primary" type="submit">Signin</button>
+                            <button className="btn btn-primary" type="submit" disabled={!formik.isValid || !formik.dirty}>Signin</button>
                             <button className="btn btn-ghost" type="button" onClick={pushToRegister}>Register</button>
                         </div>
                     </div>
