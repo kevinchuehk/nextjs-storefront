@@ -1,54 +1,53 @@
-import client from "../lib/apollo"
 import { useRouter } from 'next/router'
-import { gql } from "@apollo/client"
-import React, { useState, useEffect } from 'react' 
+import { gql, useQuery } from "@apollo/client"
+import React, { useState, useEffect } from 'react'
 
-const queryProfile = async () => {
-    try {
-        const PROFILE_GQL = gql`
-            query profile {
-                me {
-                    id
-                    email
-                    defaultBillingAddress {
-                    streetAddress1
-                    country {
-                        country
-                    }
-                    }
+const PROFILE_GQL = gql`
+    query profile {
+        me {
+            id
+            email
+            defaultBillingAddress {
+                streetAddress1
+                country {
+                    country
                 }
             }
-        `
-
-        
-    } catch(err) {
-        alert(err)
+        }
     }
-}
+`
 
 export default function Profile() {
     const router = useRouter()
-    const [isLogin, setLogin] = useState(false)
+    const [isLogin, setLogin ] = useState(false)
 
-    useEffect(async () => {
-        const isLogin = sessionStorage.getItem("isLogin") ? true : false
+    useEffect(() => {
+        const isLogin = sessionStorage.getItem("isLogin") == true? true : false
         setLogin(isLogin)
-
-        if(!isLogin) return
-
-        
+        if (!isLogin) { router.push("/login") }
     })
 
-    if (!isLogin) {
-        router.push("/login")
-        return
+    if(isLogin) return (<div></div>)
+
+    const { loading, error, data } = useQuery(PROFILE_GQL);
+
+    if (loading) {
+        return <div>Loading...</div>;
     }
 
-    
+    if (error) {
+        console.error(error);
+        return <div>Error!</div>;
+    }
+
+    const { email, defaultBillingAddress } = data.me
+    const { streetAddress1, country } = defaultBillingAddress
 
     return (
         <div>
-
+            <p>Email: {email}</p>
+            <p>StreetAddress: {streetAddress1}</p>
+            <p>Country: {country.country}</p>
         </div>
     )
 }

@@ -28,7 +28,7 @@ export default function User() {
     const [isLogin, setLogin] = useState(false)
 
     useEffect(() => {
-        const isLogin = sessionStorage.getItem("isLogin") ? true : false
+        const isLogin = (sessionStorage.getItem("isLogin") == true) ? true : false
         setLogin(isLogin)
     })
 
@@ -47,11 +47,12 @@ export default function User() {
             }
         `
         try {
-            const data = await client.mutate({
+            const { data } = await client.mutate({
                 mutation: SIGNIN_GQL,
                 variables: { email, password }
             })
 
+            console.log(data)
             const { token, errors } = data.tokenCreate
 
             if(errors && errors.length > 0) {
@@ -59,7 +60,8 @@ export default function User() {
                 sessionStorage.setItem("isLogin", false)
                 setLoginError(errors)
             }
-            else {
+
+            if(token && token!="") {
                 sessionStorage.setItem("token", token)
                 sessionStorage.setItem("isLogin", true)
                 router.push("/profile")
@@ -69,7 +71,7 @@ export default function User() {
         }
     }
 
-    if (isLogin) {
+    if (isLogin == true) {
         router.push("/profile")
         return
     }

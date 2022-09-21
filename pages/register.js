@@ -9,19 +9,34 @@ const RegisterSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Required"),
     password: Yup.string().required("Required"),
     confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "please repeat the password")
- })
+})
 
 const showErrors = (errors) => errors.map(error => {
     return (
         <div className="alert alert-error shadow-lg">
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <span>{`${error.field} -- ${error.message }`}</span>
+                <span>{`${error.field} -- ${error.code}`}</span>
             </div>
         </div>
     )
 })
 
+
+const REGISTER_GQL = gql`
+    mutation register($email: String!, $password: String!, $channel: String!) {
+        accountRegister(input: {email: $email, password: $password, channel: $channel}) {
+            errors {
+                field
+                code
+            }
+            user {
+                email
+                isActive
+            }
+        }
+    }
+`
 
 export default function Register() {
     const router = useRouter()
@@ -29,38 +44,24 @@ export default function Register() {
     const [isLogin, setLogin] = useState(false)
 
     useEffect(() => {
-        const isLogin = sessionStorage.getItem("isLogin") ? true : false
+        const isLogin = sessionStorage.getItem("isLogin") == true ? true : false
         setLogin(isLogin)
     })
 
-    const handleRegisterSubmit = async(values) => {
+    const handleRegisterSubmit = async (values) => {
         const { email, password } = values
-        const REGISTER_GQL = gql`
-            mutation register($email: String!, $password: String!, $channel: String!) {
-                accountRegister(email: $email, password: $password, channel: $channel) {
-                    errors {
-                        field
-                        code
-                    }
-                    user {
-                        email
-                        isActive
-                    }
-                }
-            }
-        
-        `
 
         try {
-            const data = await client.mutate({
+            const { data } = await client.mutate({
                 mutation: REGISTER_GQL,
                 variables: { email, password, channel: "default-channel" }
             })
 
             const { user, errors } = data.accountRegister
-            if(errors && errors.length > 0) {
+            if (errors && errors.length > 0) {
                 setRegisterError(errors)
-            } 
+                console.log(data)
+            }
             else {
                 router.push("/login")
             }
@@ -70,7 +71,7 @@ export default function Register() {
         }
     }
 
-    if (isLogin) {
+    if (isLogin == true) {
         router.push("/profile")
         return
     }
@@ -85,12 +86,12 @@ export default function Register() {
         onSubmit: handleRegisterSubmit,
         validationSchema: RegisterSchema
     })
-    
+
     const pushToLogin = () => router.push("/login")
 
-    return(
+    return (
         <form onSubmit={formik.handleSubmit}>
-             <div className="grid grid-rows-3 place-content-center md:place-content-center">
+            <div className="grid grid-rows-3 place-content-center md:place-content-center">
                 <div className="card w-96 bg-neutral text-neutral-content">
                     <div className="card-body items-center text-center">
                         <h2 className="card-title">Register</h2>
