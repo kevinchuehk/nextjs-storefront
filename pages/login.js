@@ -95,7 +95,7 @@ export default function User() {
                         <h2 className="card-title">Login</h2>
                         <p>{formik.errors.email}</p>
                         <label className="input-group">
-                            <span className="">Email</span>
+                            <span className="bg-sky-600">Email</span>
                             <input
                                 name="email"
                                 type="text"
@@ -107,7 +107,7 @@ export default function User() {
                         </label>
                         <p>{formik.errors.password}</p>
                         <label className="input-group">
-                            <span className="">Password</span>
+                            <span className="bg-sky-600">Password</span>
                             <input
                                 name="password"
                                 type="password"

@@ -97,7 +97,7 @@ export default function Register() {
                         <h2 className="card-title">Register</h2>
                         <p>{formik.errors.email}</p>
                         <label className="input-group">
-                            <span className="">Email</span>
+                            <span className="bg-sky-600">Email</span>
                             <input
                                 name="email"
                                 type="text"
@@ -109,7 +109,7 @@ export default function Register() {
                         </label>
                         <p>{formik.errors.password}</p>
                         <label className="input-group">
-                            <span className="">Password</span>
+                            <span className="bg-sky-600">Password</span>
                             <input
                                 name="password"
                                 type="password"
@@ -121,7 +121,7 @@ export default function Register() {
 
                         <p>{formik.errors.confirmPassword}</p>
                         <label className="input-group">
-                            <span className="">Repeat Password</span>
+                            <span className="bg-sky-600">Repeat Password</span>
                             <input
                                 name="confirmPassword"
                                 type="password"
