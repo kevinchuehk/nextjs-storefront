@@ -28,7 +28,7 @@ export default function User() {
     const [isLogin, setLogin] = useState(false)
 
     useEffect(() => {
-        const isLogin = (sessionStorage.getItem("isLogin") == true) ? true : false
+        const isLogin = (sessionStorage.getItem("isLogin") == "true") ? true : false
         setLogin(isLogin)
     })
 
